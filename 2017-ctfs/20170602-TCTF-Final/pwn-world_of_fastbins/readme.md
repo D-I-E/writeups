@@ -22,5 +22,8 @@ libc address is almost the same. Get some overlap, and read the freed chunk. The
 ## control flow hijack
 I used the trick of the HITCON 2016 challenge "house of orange". That is, we use the unsorted bin attack to attack the _IO_list_all variable in libc. Since the content of that _IO_list_all variable is not chunk-looked, we'll get an exception. When facing exception, libc will flush the IO, using the _IO_list_all it self! So, we change the _IO_list_all to somewhere in main_arena, since we can control some of the address (the bins address) partially, we can get this work by use a fake file struct. This is almost the same as that challenge. Search for some writeups, there are plenty of them, and I don't want to add one more.
 
+# Notice
+The libc given is version 2.19, the smallbin trick to get libc base address depends on the libc we use, since the main_arena is at data section not code. So the length of libc is extremely important. Do aware that. I even changed to ubuntu 14.04 to make this done.
+
 # exp.py
 final exploit is presented in the same directory. Note that this exploit not always work, you may need several times. That is because the house of orange trick depends on some condition in the IO fresh process. And since we cannot fully control that process, we can only hope that the condition can be passed. Fortunately, that condition is very likely to be passed, so this exploit works if you try several times.
